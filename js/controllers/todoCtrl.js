@@ -38,6 +38,10 @@ angular.module('todomvc')
 				return;
 			}
 
+			if (todos.length == 10) {
+				return;
+			}
+
 			$scope.saving = true;
 			store.insert(newTodo)
 				.then(function success() {
