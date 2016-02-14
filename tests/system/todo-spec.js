@@ -1,5 +1,5 @@
 "use strict";
-var AngularJSPage, TodoMVCPage;
+var AngularJSPage, TodoMVCPage, LocalMVCPage;
 
 AngularJSPage = function () {
   var sels = {
@@ -47,6 +47,12 @@ TodoMVCPage = function () {
   this.clearTicked = () => element(sels.clearTickedButton).click();
 };
 
+LocalMVCPage = function() {
+  TodoMVCPage.apply(this, []);
+
+  this.goto = () => browser.get('http://localhost:9000');
+};
+
 /**
  * Skript testujici to-do formular na strankach https://angularjs.org, napsany
  * pomoci Jasmine a Protractor. Vice informaci na:
@@ -56,6 +62,7 @@ TodoMVCPage = function () {
 describe('angularjs & todoJS homepage todo list', function() {
   test(new AngularJSPage());
   test(new TodoMVCPage());
+  test(new LocalMVCPage());
 
   function test(Page) {
     it('should add a todo', function () {

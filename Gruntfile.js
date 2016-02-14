@@ -5,32 +5,81 @@
  * @param grunt instance gruntu bude predana sem
  */
 module.exports = function(grunt) {
-  // nacti tasky, ktere budeme potrebovat
   grunt.loadNpmTasks('grunt-protractor-runner');
   grunt.loadNpmTasks('grunt-protractor-webdriver');
+  grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-express');
+  grunt.loadNpmTasks('grunt-open');
 
-  // specifikuj konfiguraci jednotlivych tasku
   grunt.initConfig({
-    // je treba nastartovat webdriver (fungujeme lokalne)
     protractor_webdriver: {
       run: {}
     },
 
-    // spustime protractor testy z conf.js
     protractor: {
       options: {
         keepAlive: true,
-        configFile: 'conf.js'
+        configFile: 'tests/protractor.conf.js'
       },
-      run: {}
+      system: {}
+    },
+
+    karma: {
+      unit: {
+        configFile: 'tests/karma.conf.js'
+      }
+    },
+
+    express: {
+      options: {
+        port: 9000,
+        hostname: '*'
+      },
+      test: {
+        options: {
+          bases: ['.']
+        }
+      },
+      run: {
+        options: {
+          bases: ['.'],
+          livereload: true
+        }
+      }
+    },
+
+    watch: {
+      run: {
+        files: ['.']
+      }
+    },
+
+    open: {
+      run: {
+        url: 'http://localhost:<%= express.options.port %>'
+      }
     }
   });
 
-  // definujeme task test, ktery spusti selenium
-  // webdriver a v zapeti i samotne testy
+  grunt.registerTask('unit-test', [
+      'karma:unit'
+  ]);
+
+  grunt.registerTask('system-test', [
+      'protractor_webdriver:run',
+      'protractor:system'
+  ]);
+
   grunt.registerTask('test', [
-    'protractor_webdriver:run',
-    'protractor:run'
+      'unit-test',
+      'express:test',
+      'system-test'
+  ]);
+
+  grunt.registerTask('run', [
+      'express:run',
+      'open',
+      'watch'
   ]);
 
   // pokud nebude uvedeno jinak, spousti se task

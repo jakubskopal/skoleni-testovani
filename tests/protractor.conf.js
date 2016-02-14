@@ -4,6 +4,6 @@
  */
 exports.config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['tests/system/todo-spec.js']
+  specs: ['system/todo-spec.js']
 };
 
