@@ -1,7 +1,9 @@
 describe('angularjs homepage todo list', function() {
   it('should add a todo', function() {
+    // Open url
     browser.get('https://angularjs.org');
 
+    // Send these keys to
     element(by.model('todoList.todoText')).sendKeys('write first protractor test');
     element(by.css('[value="add"]')).click();
 
