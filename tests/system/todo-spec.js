@@ -63,14 +63,15 @@ describe('angularjs & todoJS homepage todo list', function() {
   it('should clear the ticked todos when asked to do so', function () {
     Page.goto();
 
+    Page.addTodo('one todo');
     Page.addTodo('another todo');
 
-    expect(Page.todoCount()).toEqual(1);
+    expect(Page.todoCount()).toEqual(2);
     Page.tickOff(0);
 
     Page.clearTicked();
     expect(Page.tickedCount()).toEqual(0);
-    expect(Page.todoCount()).toEqual(0);
+    expect(Page.todoCount()).toEqual(1);
   });
 });
 
