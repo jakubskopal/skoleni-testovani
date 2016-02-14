@@ -23,8 +23,11 @@ Using the selenium server at http://localhost:4444/wd/hub
 Session created: count=1, browserName=chrome
 Started
 .
+```
 
+![Protractor Running](img/protractor-running.png)
 
+```
 1 spec, 0 failures
 Finished in 4.412 seconds
 Session deleted: Going to shut down the Selenium server
