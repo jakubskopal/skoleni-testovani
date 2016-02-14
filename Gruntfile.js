@@ -37,13 +37,15 @@ module.exports = function(grunt) {
       },
       test: {
         options: {
-          bases: ['.']
+          bases: ['.'],
+          server: './server'
         }
       },
       run: {
         options: {
           bases: ['.'],
-          livereload: true
+          livereload: true,
+          server: './server'
         }
       }
     },
