@@ -1,3 +1,9 @@
+/**
+ * Skript testujici to-do formular na strankach https://angularjs.org, napsany
+ * pomoci Jasmine a Protractor. Vice informaci na:
+ * http://jasmine.github.io/2.4/introduction.html
+ * https://angular.github.io/protractor/#/tutorial
+ */
 describe('angularjs homepage todo list', function() {
   it('should add a todo', function() {
     // Open url
