@@ -8,30 +8,17 @@ AngularJSPage = function () {
     ticked: by.css('.done-true')
   };
 
-  this.goto = function() {
-    return browser.get('https://angularjs.org');
-  };
+  this.goto = () => browser.get('https://angularjs.org');
 
   this.addTodo = function(text) {
     element(sels.text).sendKeys(text);
     element(sels.addButton).click();
   };
 
-  this.todoCount = function() {
-    return element.all(sels.todos).count();
-  };
-
-  this.todoText = function(i) {
-    return element.all(sels.todos).get(i).getText();
-  };
-
-  this.tickOff = function(i) {
-    return element.all(sels.todos).get(i).element(by.css('input')).click();
-  };
-
-  this.tickedCount = function() {
-    return element.all(sels.ticked).count();
-  };
+  this.todoCount = () => element.all(sels.todos).count();
+  this.todoText = (i) => element.all(sels.todos).get(i).getText();
+  this.tickOff = (i) => element.all(sels.todos).get(i).element(by.css('input')).click();
+  this.tickedCount = () => element.all(sels.ticked).count();
 };
 
 TodoMVCPage = function () {
@@ -42,30 +29,17 @@ TodoMVCPage = function () {
     ticked: by.css('ul#todo-list li.completed')
   };
 
-  this.goto = function() {
-    return browser.get('http://todomvc.com/examples/angularjs/');
-  };
+  this.goto = () => browser.get('http://todomvc.com/examples/angularjs/');
 
   this.addTodo = function(text) {
     element(sels.text).sendKeys(text);
     element(sels.form).submit();
   };
 
-  this.todoCount = function() {
-    return element.all(sels.todos).count();
-  };
-
-  this.todoText = function(i) {
-    return element.all(sels.todos).get(i).element(by.css('label')).getText();
-  };
-
-  this.tickOff = function(i) {
-    return element.all(sels.todos).get(i).element(by.css('input[type="checkbox"]')).click();
-  };
-
-  this.tickedCount = function() {
-    return element.all(sels.ticked).count();
-  };
+  this.todoCount = () => element.all(sels.todos).count();
+  this.todoText = (i) => element.all(sels.todos).get(i).element(by.css('label')).getText();
+  this.tickOff = (i) => element.all(sels.todos).get(i).element(by.css('input[type="checkbox"]')).click();
+  this.tickedCount = () => element.all(sels.ticked).count();
 };
 
 /**
@@ -74,40 +48,30 @@ TodoMVCPage = function () {
  * http://jasmine.github.io/2.4/introduction.html
  * https://angular.github.io/protractor/#/tutorial
  */
-describe('angularjs homepage todo list', function() {
-  var Page = new AngularJSPage();
-  it('should add a todo', function() {
-    // Open url
-    Page.goto();
+describe('angularjs & todoJS homepage todo list', function() {
+  shouldAddTodo(new AngularJSPage());
+  shouldAddTodo(new TodoMVCPage());
 
-    // Send these keys to
-    Page.addTodo('write first protractor test')
+  function shouldAddTodo(Page) {
+    it('should add a todo', function () {
+      // Open url
+      Page.goto();
 
-    expect(Page.todoCount()).toEqual(3);
-    expect(Page.todoText(2)).toEqual('write first protractor test');
+      var initialCount = Page.todoCount(),
+          initialCountPlusOne = initialCount.then(i => i+1),
+          initialTickedPlusOne = Page.tickedCount().then(i => i+1);
 
-    Page.tickOff(2);
-    expect(Page.tickedCount()).toEqual(2);
-  });
-});
+      // Add todo
+      Page.addTodo('write first protractor test');
 
-/**
- * Skript testujici to-do formular na strnakach http://todomvc.com/examples/angularjs/#/
- */
-describe('todomvc angular todo list', function() {
-  var Page = new TodoMVCPage();
-  it('should add a todo', function() {
-    // Open url
-    Page.goto();
+      // Check that the new todo is there
+      expect(Page.todoCount()).toEqual(initialCountPlusOne);
+      expect(Page.todoText(initialCount)).toEqual('write first protractor test');
 
-    // Send these keys to
-    Page.addTodo('write first protractor test')
-
-    expect(Page.todoCount()).toEqual(1);
-    expect(Page.todoText(0)).toEqual('write first protractor test');
-
-    Page.tickOff(0);
-    expect(Page.tickedCount()).toEqual(1);
-  });
+      // Tick it off and check that it did
+      Page.tickOff(initialCount);
+      expect(Page.tickedCount()).toEqual(initialTickedPlusOne);
+    });
+  }
 });
 
