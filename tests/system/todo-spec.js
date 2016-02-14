@@ -1,30 +1,8 @@
 "use strict";
-var AngularJSPage, TodoMVCPage, LocalMVCPage;
+var request = require('request'),
+    LocalMVCPage;
 
-AngularJSPage = function () {
-  var sels = {
-    text: by.model('todoList.todoText'),
-    addButton: by.css('[value="add"]'),
-    todos: by.repeater('todo in todoList.todos'),
-    ticked: by.css('.done-true'),
-    clearTickedButton: by.css('a[ng-click="todoList.archive()"]')
-  };
-
-  this.goto = () => browser.get('https://angularjs.org');
-
-  this.addTodo = function(text) {
-    element(sels.text).sendKeys(text);
-    element(sels.addButton).click();
-  };
-
-  this.todoCount = () => element.all(sels.todos).count();
-  this.todoText = (i) => element.all(sels.todos).get(i).getText();
-  this.tickOff = (i) => element.all(sels.todos).get(i).element(by.css('input')).click();
-  this.tickedCount = () => element.all(sels.ticked).count();
-  this.clearTicked = () => element(sels.clearTickedButton).click();
-};
-
-TodoMVCPage = function () {
+LocalMVCPage = function () {
   var sels = {
     text: by.css('input#new-todo'),
     form: by.css('form#todo-form'),
@@ -33,7 +11,7 @@ TodoMVCPage = function () {
     clearTickedButton: by.css('button#clear-completed')
   };
 
-  this.goto = () => browser.get('http://todomvc.com/examples/angularjs/');
+  this.goto = () => browser.get('http://localhost:9000');
 
   this.addTodo = function(text) {
     element(sels.text).sendKeys(text);
@@ -47,11 +25,17 @@ TodoMVCPage = function () {
   this.clearTicked = () => element(sels.clearTickedButton).click();
 };
 
-LocalMVCPage = function() {
-  TodoMVCPage.apply(this, []);
+var Page = new LocalMVCPage();
 
-  this.goto = () => browser.get('http://localhost:9000');
-};
+beforeEach(function() {
+  protractor.promise.controlFlow().execute(function() {
+    var dfd = protractor.promise.defer();
+    request.del('http://localhost:9000/api', function(err, msg) {
+      if (err) { dfd.reject(err); } else { dfd.fulfill(msg); }
+    });
+    return dfd.promise;
+  });
+});
 
 /**
  * Skript testujici to-do formular na strankach https://angularjs.org, napsany
@@ -60,50 +44,33 @@ LocalMVCPage = function() {
  * https://angular.github.io/protractor/#/tutorial
  */
 describe('angularjs & todoJS homepage todo list', function() {
-  test(new AngularJSPage());
-  test(new TodoMVCPage());
-  test(new LocalMVCPage());
+  it('should add a todo', function () {
+    // Open url
+    Page.goto();
 
-  function test(Page) {
-    it('should add a todo', function () {
-      // Open url
-      Page.goto();
+    // Add todo
+    Page.addTodo('write first protractor test');
 
-      var initialCount = Page.todoCount(),
-          initialCountPlusOne = initialCount.then(i => i+1),
-          initialTickedPlusOne = Page.tickedCount().then(i => i+1);
+    // Check that the new todo is there
+    expect(Page.todoCount()).toEqual(1);
+    expect(Page.todoText(0)).toEqual('write first protractor test');
 
-      // Add todo
-      Page.addTodo('write first protractor test');
+    // Tick it off and check that it did
+    Page.tickOff(0);
+    expect(Page.tickedCount()).toEqual(1);
+  });
 
-      // Check that the new todo is there
-      expect(Page.todoCount()).toEqual(initialCountPlusOne);
-      expect(Page.todoText(initialCount)).toEqual('write first protractor test');
+  it('should clear the ticked todos when asked to do so', function () {
+    Page.goto();
 
-      // Tick it off and check that it did
-      Page.tickOff(initialCount);
-      expect(Page.tickedCount()).toEqual(initialTickedPlusOne);
-    });
+    Page.addTodo('another todo');
 
-    it('should clear the ticked todos when asked to do so', function () {
-      Page.goto();
+    expect(Page.todoCount()).toEqual(1);
+    Page.tickOff(0);
 
-      var initialCount = Page.todoCount(),
-          initialCountPlusOne = initialCount.then(i => i + 1),
-          initialTickedCount = Page.tickedCount(),
-          expectedCount = protractor.promise.all([initialCount, initialTickedCount]).then(function(r) {
-            return r[0] - r[1];
-          });
-
-      Page.addTodo('another todo');
-
-      expect(Page.todoCount()).toEqual(initialCountPlusOne);
-      Page.tickOff(initialCount);
-
-      Page.clearTicked();
-      expect(Page.tickedCount()).toEqual(0);
-      expect(Page.todoCount()).toEqual(expectedCount);
-    });
-  }
+    Page.clearTicked();
+    expect(Page.tickedCount()).toEqual(0);
+    expect(Page.todoCount()).toEqual(0);
+  });
 });
 

@@ -7,7 +7,7 @@ var express = require('express'),
 app.use(require('body-parser').json());
 
 app.get('/api', (req, res) => res.end());
-app.delete('/api', (req, res) => res.end(todos = []));
+app.delete('/api', (req, res) => { todos = []; res.end(); });
 
 app.get('/api/todos', (req, res) => res.json(todos));
 app.post('/api/todos', (req, res) => res.json(addTodo(req.body)));
