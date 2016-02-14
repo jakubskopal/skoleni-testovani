@@ -73,5 +73,17 @@ describe('angularjs & todoJS homepage todo list', function() {
     expect(Page.tickedCount()).toEqual(0);
     expect(Page.todoCount()).toEqual(1);
   });
+
+  it('should not allow adding more than 10 todos', function() {
+    var i;
+
+    Page.goto();
+
+    for (i=0; i<10; i++) { Page.addTodo('todo #'+i); }
+    expect(Page.todoCount()).toEqual(10);
+
+    Page.addTodo('extra todo');
+    expect(Page.todoCount()).toEqual(10);
+  })
 });
 
