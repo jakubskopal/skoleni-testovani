@@ -6,38 +6,14 @@ var express = require('express'),
 
 app.use(require('body-parser').json());
 
-app.get('/api', function (req, res) {
-  res.end();
-});
+app.get('/api', (req, res) => res.end());
+app.delete('/api', (req, res) => res.end(todos = []));
 
-app.delete('/api', function (req, res) {
-  todos = [];
-  nextId = 0;
-  res.end();
-});
-
-app.get('/api/todos', function(req, res) {
-  res.json(todos);
-});
-
-app.post('/api/todos', function(req, res) {
-  res.json(addTodo(req.body));
-});
-
-app.delete('/api/todos', function(req, res) {
-  res.json(deleteCompleted());
-});
-
-app.delete('/api/todos/:id', function(req, res) {
-  var id = parseInt(req.params['id'], 10);
-  res.json(deleteTodo(id));
-});
-
-app.put('/api/todos/:id', function(req, res) {
-  var id = parseInt(req.params['id'], 10);
-  res.json(updateTodo(id, req.body));
-});
-
+app.get('/api/todos', (req, res) => res.json(todos));
+app.post('/api/todos', (req, res) => res.json(addTodo(req.body)));
+app.delete('/api/todos', (req, res) => res.json(deleteCompleted()));
+app.delete('/api/todos/:id', (req, res) => res.json(deleteTodo(parseInt(req.params['id'], 10))));
+app.put('/api/todos/:id', (req, res) => res.json(updateTodo(parseInt(req.params['id'], 10), req.body)));
 
 function addTodo(todo) {
   var record = {
