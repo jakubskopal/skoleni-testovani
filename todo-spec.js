@@ -1,17 +1,39 @@
-/**
- * Skript testujici to-do formular na strankach https://angularjs.org, napsany
- * pomoci Jasmine a Protractor. Vice informaci na:
- * http://jasmine.github.io/2.4/introduction.html
- * https://angular.github.io/protractor/#/tutorial
- */
+var AngularJSPage, TodoMVCPage;
+
+AngularJSPage = {
+  sels: {
+    text: by.model('todoList.todoText'),
+    addButton: by.css('[value="add"]')
+  },
+  goto: function() {
+    return browser.get('https://angularjs.org');
+  },
+  addTodo: function(text) {
+    element(AngularJSPage.sels.text).sendKeys(text);
+    element(AngularJSPage.sels.addButton).click();
+  }
+};
+
+TodoMVCPage = {
+  sels: {
+    text: by.css('input#new-todo'),
+    form: by.css('form#todo-form')
+  },
+  goto: function() { return browser.get('http://todomvc.com/examples/angularjs/'); },
+  addTodo: function(text) {
+    element(TodoMVCPage.sels.text).sendKeys(text);
+    element(TodoMVCPage.sels.form).submit();
+  }
+};
+
 describe('angularjs homepage todo list', function() {
+  var Page = AngularJSPage;
   it('should add a todo', function() {
     // Open url
-    browser.get('https://angularjs.org');
+    Page.goto();
 
     // Send these keys to
-    element(by.model('todoList.todoText')).sendKeys('write first protractor test');
-    element(by.css('[value="add"]')).click();
+    Page.addTodo('write first protractor test')
 
     var todoList = element.all(by.repeater('todo in todoList.todos'));
     expect(todoList.count()).toEqual(3);
@@ -28,13 +50,13 @@ describe('angularjs homepage todo list', function() {
  * Skript testujici to-do formular na strnakach http://todomvc.com/examples/angularjs/#/
  */
 describe('todomvc angular todo list', function() {
+  var Page = TodoMVCPage;
   it('should add a todo', function() {
     // Open url
-    browser.get('http://todomvc.com/examples/angularjs/');
+    Page.goto();
 
     // Send these keys to
-    element(by.css('input#new-todo')).sendKeys('write first protractor test');
-    element(by.css('form#todo-form')).submit();
+    Page.addTodo('write first protractor test')
 
     var todoList = element.all(by.css('ul#todo-list li'));
     expect(todoList.count()).toEqual(1);
