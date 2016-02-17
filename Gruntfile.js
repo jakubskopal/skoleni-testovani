@@ -52,7 +52,8 @@ module.exports = function(grunt) {
 
     watch: {
       run: {
-        files: ['.']
+        files: ['.'],
+        livereload: true
       }
     },
 
