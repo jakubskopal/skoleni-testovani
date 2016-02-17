@@ -84,9 +84,7 @@ describe('angularjs & todoJS homepage todo list', function() {
       var initialCount = Page.todoCount(),
           initialCountPlusOne = initialCount.then(i => i + 1),
           initialTickedCount = Page.tickedCount(),
-          expectedCount = protractor.promise.all([initialCount, initialTickedCount]).then(function(r) {
-            return r[0] - r[1];
-          });
+          expectedCount = protractor.promise.all([initialCount, initialTickedCount]).then(r => r[0] - r[1]);
 
       Page.addTodo('another todo');
 
