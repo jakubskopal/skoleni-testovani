@@ -37,42 +37,36 @@ beforeEach(function() {
   });
 });
 
-/**
- * Skript testujici to-do formular na strankach https://angularjs.org, napsany
- * pomoci Jasmine a Protractor. Vice informaci na:
- * http://jasmine.github.io/2.4/introduction.html
- * https://angular.github.io/protractor/#/tutorial
- */
 describe('angularjs & todoJS homepage todo list', function() {
-//  it('should add a todo', function () {
-//    // Open url
-//    Page.goto();
-//
-//    // Add todo
-//    Page.addTodo('write first protractor test');
-//
-//    // Check that the new todo is there
-//    expect(Page.todoCount()).toEqual(1);
-//    expect(Page.todoText(0)).toEqual('write first protractor test');
-//
-//    // Tick it off and check that it did
-//    Page.tickOff(0);
-//    expect(Page.tickedCount()).toEqual(1);
-//  });
-//
-//  it('should clear the ticked todos when asked to do so', function () {
-//    Page.goto();
-//
-//    Page.addTodo('one todo');
-//    Page.addTodo('another todo');
-//
-//    expect(Page.todoCount()).toEqual(2);
-//    Page.tickOff(0);
-//
-//    Page.clearTicked();
-//    expect(Page.tickedCount()).toEqual(0);
-//    expect(Page.todoCount()).toEqual(1);
-//  });
+  it('should add a todo', function () {
+    // Open url
+    Page.goto();
+
+    // Add todo
+    Page.addTodo('write first protractor test');
+
+    // Check that the new todo is there
+    expect(Page.todoCount()).toEqual(1);
+    expect(Page.todoText(0)).toEqual('write first protractor test');
+
+    // Tick it off and check that it did
+    Page.tickOff(0);
+    expect(Page.tickedCount()).toEqual(1);
+  });
+
+  it('should clear the ticked todos when asked to do so', function () {
+    Page.goto();
+
+    Page.addTodo('one todo');
+    Page.addTodo('another todo');
+
+    expect(Page.todoCount()).toEqual(2);
+    Page.tickOff(0);
+
+    Page.clearTicked();
+    expect(Page.tickedCount()).toEqual(0);
+    expect(Page.todoCount()).toEqual(1);
+  });
 
   it('should not allow adding more than 10 todos', function() {
     var i;
