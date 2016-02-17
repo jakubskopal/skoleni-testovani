@@ -68,13 +68,13 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('system-test', [
+      'express:test',
       'protractor_webdriver:run',
       'protractor:system'
   ]);
 
   grunt.registerTask('test', [
       'unit-test',
-      'express:test',
       'system-test'
   ]);
 
